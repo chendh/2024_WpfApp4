@@ -16,8 +16,7 @@ namespace _2024_WpfApp4
         Color strokeColor = Colors.Red;
         Color fillColor = Colors.Aqua;
         int strokeThickness = 1;
-
-        string shapeType = "";
+        string shapeType = "line";
 
         private void MyCanvas_MouseEnter(object sender, MouseEventArgs e)
         {
@@ -28,6 +27,44 @@ namespace _2024_WpfApp4
         {
             myCanvas.Cursor = Cursors.Cross;
             start = e.GetPosition(myCanvas);
+
+            switch (shapeType)
+            {
+                case "line":
+                    Line line = new Line
+                    {
+                        X1 = start.X,
+                        Y1 = start.Y,
+                        X2 = dest.X,
+                        Y2 = dest.Y,
+                        StrokeThickness = 1,
+                        Stroke = Brushes.Gray
+                    };
+                    myCanvas.Children.Add(line);
+                    break;
+                case "rectangle":
+                    Rectangle rect = new Rectangle
+                    {
+                        Stroke = Brushes.Gray,
+                        Fill = Brushes.LightGray
+                    };
+                    myCanvas.Children.Add(rect);
+                    rect.SetValue(Canvas.LeftProperty, start.X);
+                    rect.SetValue(Canvas.TopProperty, start.Y);
+                    break;
+                case "ellipse":
+                    Ellipse ellipse = new Ellipse
+                    {
+                        Stroke = Brushes.Gray,
+                        Fill = Brushes.LightGray
+                    };
+                    myCanvas.Children.Add(ellipse);
+                    ellipse.SetValue(Canvas.LeftProperty, start.X);
+                    ellipse.SetValue(Canvas.TopProperty, start.Y);
+                    break;
+                case "polyline":
+                    break;
+            }
             DisplayStatus();
         }
 
@@ -47,22 +84,67 @@ namespace _2024_WpfApp4
         private void MyCanvas_MouseMove(object sender, MouseEventArgs e)
         {
             dest = e.GetPosition(myCanvas);
+
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                Point origin;
+                origin.X = Math.Min(start.X, dest.X);
+                origin.Y = Math.Min(start.Y, dest.Y);
+                double width = Math.Abs(start.X - dest.X);
+                double height = Math.Abs(start.Y - dest.Y);
+
+                switch (shapeType)
+                {
+                    case "line":
+                        var line = myCanvas.Children.OfType<Line>().LastOrDefault();
+                        line.X2 = dest.X;
+                        line.Y2 = dest.Y;
+                        break;
+                    case "rectangle":
+                        var rect = myCanvas.Children.OfType<Rectangle>().LastOrDefault();
+                        rect.Width = width;
+                        rect.Height = height;
+                        rect.SetValue(Canvas.LeftProperty, origin.X);
+                        rect.SetValue(Canvas.TopProperty, origin.Y);
+                        break;
+                    case "ellipse":
+                        var ellipse = myCanvas.Children.OfType<Ellipse>().LastOrDefault();
+                        ellipse.Width = width;
+                        ellipse.Height = height;
+                        ellipse.SetValue(Canvas.LeftProperty, origin.X);
+                        ellipse.SetValue(Canvas.TopProperty, origin.Y);
+                        break;
+                    case "polyline":
+                        break;
+                }
+            }
             DisplayStatus();
         }
 
         private void MyCanvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            Brush brush = new SolidColorBrush(strokeColor);
-            Line line = new Line
+            switch (shapeType)
             {
-                Stroke = brush,
-                StrokeThickness = strokeThickness,
-                X1 = start.X,
-                Y1 = start.Y,
-                X2 = dest.X,
-                Y2 = dest.Y
-            };
-            myCanvas.Children.Add(line);
+                case "line":
+                    var line = myCanvas.Children.OfType<Line>().LastOrDefault();
+                    line.Stroke = new SolidColorBrush(strokeColor);
+                    line.StrokeThickness = strokeThickness;
+                    break;
+                case "rectangle":
+                    var rect = myCanvas.Children.OfType<Rectangle>().LastOrDefault();
+                    rect.Stroke = new SolidColorBrush(strokeColor);
+                    rect.Fill = new SolidColorBrush(fillColor);
+                    rect.StrokeThickness = strokeThickness;
+                    break;
+                case "ellipse":
+                    var ellipse = myCanvas.Children.OfType<Ellipse>().LastOrDefault();
+                    ellipse.Stroke = new SolidColorBrush(strokeColor);
+                    ellipse.Fill = new SolidColorBrush(fillColor);
+                    ellipse.StrokeThickness = strokeThickness;
+                    break;
+                case "polyline":
+                    break;
+            }
         }
 
         private void StrokeThicknessSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -75,6 +157,16 @@ namespace _2024_WpfApp4
             var targetRadioButton = sender as RadioButton;
             shapeType = targetRadioButton.Tag.ToString();
             DisplayStatus();
+        }
+
+        private void StrokeColorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
+        {
+            strokeColor = strokeColorPicker.SelectedColor.Value;
+        }
+
+        private void FillColorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
+        {
+            fillColor = fillColorPicker.SelectedColor.Value;
         }
     }
 }
