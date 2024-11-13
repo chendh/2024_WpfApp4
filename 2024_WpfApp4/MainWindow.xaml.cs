@@ -14,39 +14,43 @@ namespace _2024_WpfApp4
         Point start = new Point { X = 0, Y = 0 };
         Point dest = new Point { X = 0, Y = 0 };
         Color strokeColor = Colors.Red;
+        Color fillColor = Colors.Aqua;
         int strokeThickness = 1;
+
         string shapeType = "";
 
-        private void myCanvas_MouseEnter(object sender, MouseEventArgs e)
+        private void MyCanvas_MouseEnter(object sender, MouseEventArgs e)
         {
             myCanvas.Cursor = Cursors.Pen;
         }
 
-        private void myCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void MyCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             myCanvas.Cursor = Cursors.Cross;
             start = e.GetPosition(myCanvas);
-            DisplayStatus(start, dest);
+            DisplayStatus();
         }
 
-        private void DisplayStatus(Point start, Point dest)
+        private void DisplayStatus()
         {
             pointLabel.Content = $"({Convert.ToInt32(start.X)}, {Convert.ToInt32(start.Y)}) -  ({Convert.ToInt32(dest.X)}, {Convert.ToInt32(dest.Y)})";
+            shapeLabel.Content = shapeType;
         }
 
         public MainWindow()
         {
             InitializeComponent();
             strokeColorPicker.SelectedColor = strokeColor;
+            fillColorPicker.SelectedColor = fillColor;
         }
 
-        private void myCanvas_MouseMove(object sender, MouseEventArgs e)
+        private void MyCanvas_MouseMove(object sender, MouseEventArgs e)
         {
             dest = e.GetPosition(myCanvas);
-            DisplayStatus(start, dest);
+            DisplayStatus();
         }
 
-        private void myCanvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        private void MyCanvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             Brush brush = new SolidColorBrush(strokeColor);
             Line line = new Line
@@ -61,16 +65,16 @@ namespace _2024_WpfApp4
             myCanvas.Children.Add(line);
         }
 
-        private void strokeThicknessSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        private void StrokeThicknessSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             strokeThickness = Convert.ToInt32(strokeThicknessSlider.Value);
         }
 
-        private void ShapeButton_Click(object sender, RoutedEventArgs e)
+        private void ShapeRadioButton_Checked(object sender, RoutedEventArgs e)
         {
             var targetRadioButton = sender as RadioButton;
             shapeType = targetRadioButton.Tag.ToString();
-            shapeLabel.Content = shapeType;
+            DisplayStatus();
         }
     }
 }
