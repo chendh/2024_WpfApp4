@@ -6,15 +6,11 @@
         xmlns:local="clr-namespace:_2024_WpfApp4"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
-        Title="2024 WPF Painter Ver2" Height="650" Width="1000">
+        Title="2024 WPF Painter Ver3" Height="650" Width="1000">
     <DockPanel LastChildFill="False">
         <Menu Height="30" DockPanel.Dock="Top">
             <MenuItem Header="檔案" FontSize="14" Height="28" VerticalAlignment="Center">
-                <MenuItem Header="開新檔案" FontSize="14" Height="28" VerticalAlignment="Center"/>
-                <MenuItem Header="開啟舊檔" FontSize="14" Height="28" VerticalAlignment="Center"/>
-                <MenuItem Header="儲存檔案" FontSize="14" Height="28" VerticalAlignment="Center"/>
-                <MenuItem Header="另存新檔" FontSize="14" Height="28" VerticalAlignment="Center"/>
-                <MenuItem Header="結束" FontSize="14" Height="28" VerticalAlignment="Center"/>
+                <MenuItem x:Name="SaveCanvasMenuItem" Header="儲存檔案" FontSize="14" Height="28" VerticalAlignment="Center" Click="SaveCanvasMenuItem_Click"/>
             </MenuItem>
         </Menu>
         <ToolBarTray Height="40" DockPanel.Dock="Top">
